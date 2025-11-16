@@ -467,7 +467,8 @@ impl<'c> ProofChecker<'c> {
             "bitblast_extract" => bitvectors::extract,
             "bitblast_bvadd" => bitvectors::add,
             "bitblast_ult" => bitvectors::ult,
-
+            "intblast" => bitvectors::intblast,
+            "intblast_bounds" => bitvectors::intblast_bounds,
             "concat_eq" => strings::concat_eq,
             "concat_unify" => strings::concat_unify,
             "concat_conflict" => strings::concat_conflict,

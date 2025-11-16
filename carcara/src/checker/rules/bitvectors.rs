@@ -116,3 +116,19 @@ pub fn extract(RuleArgs { conclusion, pool, .. }: RuleArgs) -> RuleResult {
     }
     Ok(())
 }
+
+pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
+  assert_clause_len(conclusion, 1)?;
+  let (bv_term, int_term) = match_term_err!((= bv_term int_term) = &conclusion[0])?;
+  let bv_term = conclusion[0];
+  let int_term = conclusion[1];
+  assert_eq(1,0)
+
+}
+
+
+pub fn intblast_bounds(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
+  assert_clause_len(conclusion, 1)?;
+
+  assert_eq(1,0)
+}
