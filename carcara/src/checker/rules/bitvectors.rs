@@ -3,6 +3,11 @@ use crate::{
     checker::rules::assert_clause_len,
 };
 
+
+use crate::{
+    ast::*
+};
+
 use super::{assert_eq, RuleArgs, RuleResult};
 
 fn build_term_vec(term: &Rc<Term>, size: usize, pool: &mut dyn TermPool) -> Vec<Rc<Term>> {
@@ -120,15 +125,37 @@ pub fn extract(RuleArgs { conclusion, pool, .. }: RuleArgs) -> RuleResult {
 pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_clause_len(conclusion, 1)?;
   let (bv_term, int_term) = match_term_err!((= bv_term int_term) = &conclusion[0])?;
-  let bv_term = conclusion[0];
-  let int_term = conclusion[1];
-  assert_eq(1,0)
+  println!("bv_term: {:?}", bv_term);
+  println!("int_term: {:?}", int_term);
+  let expected_int_term = compute_expected_int_term(bv_term, pool);
+  assert_eq(int_term, &expected_int_term)
+}
+
+fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
+  match bv_term.as_ref() {
+    Term::Op(op, args) => match op {
+      Operator::Equals => {
+        build_term!(pool, (= {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}))
+      }, 
+      Operator::BvAdd => {
+        bv_term.clone()
+      },
+      _ => {
+        bv_term.clone()
+      }
+    },
+    Term::Const(Constant::BitVec(value, _)) => {
+      pool.add(Term::new_int(value))
+    },
+    Term::Var(_, _) => {
+      build_term!(pool, (ubv_to_int {bv_term.clone()}))
+    },
+    _ => bv_term.clone()
+  }
+
 
 }
 
-
-pub fn intblast_bounds(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
-  assert_clause_len(conclusion, 1)?;
-
-  assert_eq(1,0)
+pub fn intblast_bounds(RuleArgs { conclusion,  ..}: RuleArgs) -> RuleResult {
+  assert_clause_len(conclusion, 2)
 }
