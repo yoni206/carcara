@@ -131,6 +131,19 @@ pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_eq(int_term, &expected_int_term)
 }
 
+fn uts(x: &Rc<Term>, bv_size: i32,  pool: &mut dyn TermPool) -> Rc<Term> {
+  let bv_size_m_1 = bv_size - 1;
+  let int_pow_m_1 = 2 ^ bv_size_m_1;
+  let int_pow = 2 ^ bv_size;
+  let sign_min = pool.add(Term::new_int(int_pow_m_1));
+  let pow2 = pool.add(Term::new_int(int_pow));
+  let zero = pool.add(Term::new_int(0));
+  let msb_one = build_term!(pool, (< {x.clone()} {sign_min.clone()}));
+  let ite = build_term!(pool, (ite {msb_one} {zero} {pow2}));
+  build_term!(pool, (- {x.clone()} {ite.clone()}))
+
+}
+
 fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
   match bv_term.as_ref() {
     Term::Op(op, args) => match op {
@@ -142,6 +155,9 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       },
       _ => {
         bv_term.clone()
+      },
+      Operator::BvSLt => {
+
       }
     },
     Term::Const(Constant::BitVec(value, _)) => {
