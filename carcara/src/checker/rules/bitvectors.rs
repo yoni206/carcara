@@ -131,34 +131,77 @@ pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_eq(int_term, &expected_int_term)
 }
 
-fn uts(x: &Rc<Term>, bv_size: i32,  pool: &mut dyn TermPool) -> Rc<Term> {
+
+fn get_size(x: &Rc<Term>, pool: &mut dyn TermPool) -> u32 {
+  let Sort::BitVec(x_size) = pool.sort(x).as_sort().cloned().unwrap() else {
+      unreachable!();
+  };
+  let x_isize = x_size.to_u32().unwrap();
+  x_isize
+}
+
+fn uts(x: &Rc<Term>, bv_size: u32,  pool: &mut dyn TermPool) -> Rc<Term> {
+  let two : u32 = 2;
   let bv_size_m_1 = bv_size - 1;
-  let int_pow_m_1 = 2 ^ bv_size_m_1;
-  let int_pow = 2 ^ bv_size;
+  let int_pow_m_1 = two.pow(bv_size_m_1);
+  let int_pow = two.pow(bv_size);
   let sign_min = pool.add(Term::new_int(int_pow_m_1));
   let pow2 = pool.add(Term::new_int(int_pow));
   let zero = pool.add(Term::new_int(0));
   let msb_one = build_term!(pool, (< {x.clone()} {sign_min.clone()}));
   let ite = build_term!(pool, (ite {msb_one} {zero} {pow2}));
   build_term!(pool, (- {x.clone()} {ite.clone()}))
-
 }
 
+
+
 fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
+  let two : u32 = 2;
   match bv_term.as_ref() {
     Term::Op(op, args) => match op {
       Operator::Equals => {
         build_term!(pool, (= {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}))
       }, 
       Operator::BvAdd => {
-        bv_term.clone()
+        let size = get_size(&args[0], pool);  
+        let int_pow = two.pow(size);
+        let pow_term = pool.add(Term::new_int(int_pow));
+        let addition = build_term!(pool, (+ {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}));
+        let modulus = build_term!(pool, (mod {addition} {pow_term}));
+        modulus
       },
-      _ => {
-        bv_term.clone()
+      Operator::BvLShr => {
+        let size = get_size(&args[0], pool);  
+        let zero = pool.add(Term::new_int(0));
+        let mut ite = zero;
+        let mut body;
+        let x = compute_expected_int_term(&args[0], pool);
+        let y = compute_expected_int_term(&args[1], pool);
+        for i in 0..size {
+          let i_term = pool.add(Term::new_int(i));
+          let int_pow = two.pow(i);
+          let pow_term = pool.add(Term::new_int(int_pow));
+          body = build_term!(pool, (div {x.clone()} {pow_term}));
+          let eq = build_term!(pool, (= {y.clone()} {i_term}));
+          ite = build_term!(pool, (ite {eq} {body} {ite}));
+        }
+        ite
       },
       Operator::BvSLt => {
-
+        let size = get_size(&args[0], pool);  
+        let targ0 = compute_expected_int_term(&args[0], pool);
+        let targ1 = compute_expected_int_term(&args[1], pool);
+        let uts0 = uts(&targ0, size, pool);
+        let uts1 = uts(&targ1, size, pool);
+        build_term!(pool, (< {uts0} {uts1}))
       }
+      Operator::Not => {
+        let trans = compute_expected_int_term(&args[0], pool);
+        build_term!(pool, (not {trans}))
+      }
+      _ => {
+        panic!("Unhandled int-blasting op: {}", op);
+      },
     },
     Term::Const(Constant::BitVec(value, _)) => {
       pool.add(Term::new_int(value))
@@ -175,3 +218,4 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
 pub fn intblast_bounds(RuleArgs { conclusion,  ..}: RuleArgs) -> RuleResult {
   assert_clause_len(conclusion, 2)
 }
+
