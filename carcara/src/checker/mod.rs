@@ -140,7 +140,6 @@ impl<'c> ProofChecker<'c> {
                     } else {
                         None
                     };
-                    println!("panda {} {}", step.rule.as_str(), step.id.as_str());
                     self.check_step(step, previous_command, &iter, &mut stats)
                         .map_err(|e| Error::Checker {
                             inner: e,

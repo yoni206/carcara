@@ -215,7 +215,44 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
 
 }
 
-pub fn intblast_bounds(RuleArgs { conclusion,  ..}: RuleArgs) -> RuleResult {
-  assert_clause_len(conclusion, 2)
+pub fn intblast_bounds(RuleArgs { conclusion, pool,  ..}: RuleArgs) -> RuleResult {
+  let two : u32 = 2;
+  println!("panda {:?}", conclusion);
+  let (lower, upper) = match_term_err!((and lower upper) = &conclusion[0])?;
+  println!("panda {:?}", lower);
+  println!("panda {:?}", upper);
+  let (t0, b0) = match_term_err!((>= t b) = lower)?; 
+  let (t1, b1) = match_term_err!((not (>= t b)) = upper)?; 
+  let bv_var_0 = match_term_err!((ubv_to_int bv_var) = t0)?;
+  let bv_var_1 = match_term_err!((ubv_to_int bv_var) = t1)?;
+  assert_eq(bv_var_0, bv_var_1);
+  let bw = get_size(&bv_var_0, pool);
+  let zero_term = pool.add(Term::new_int(0));
+  let pow_term = pool.add(Term::new_int(bw));
+  match b0.as_ref() {
+      Term::Const(Constant::Integer(val0)) => {
+        match b1.as_ref() {
+          Term::Const(Constant::Integer(val1)) => {
+            assert_eq(b0, &zero_term);
+            assert_eq(b1, &pow_term);
+          }
+          _ => {
+              println!("panda");
+          }
+        }
+    }
+    _ => {
+      println!("panda");
+    }
+
+  }
+  // match conclusion.as_ref() {
+  //   Term::Op(op, args) => match op {
+  //     Operator::UbvToInt => {
+  //       let size = get_size(&args[0], pool);
+  //     }
+  //   }
+  // }
+  assert_eq(lower, lower)
 }
 
