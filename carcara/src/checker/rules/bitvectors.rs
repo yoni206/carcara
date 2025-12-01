@@ -170,6 +170,14 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let modulus = build_term!(pool, (mod {addition} {pow_term}));
         modulus
       },
+      Operator::BvMul => {
+        let size = get_size(&args[0], pool);  
+        let int_pow = two.pow(size);
+        let pow_term = pool.add(Term::new_int(int_pow));
+        let mul = build_term!(pool, (* {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}));
+        let modulus = build_term!(pool, (mod {mul} {pow_term}));
+        modulus
+      },
       Operator::BvLShr => {
         let size = get_size(&args[0], pool);  
         let zero = pool.add(Term::new_int(0));
@@ -195,9 +203,24 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let uts1 = uts(&targ1, size, pool);
         build_term!(pool, (< {uts0} {uts1}))
       }
+      Operator::BvULt => {
+        let targ0 = compute_expected_int_term(&args[0], pool);
+        let targ1 = compute_expected_int_term(&args[1], pool);
+        build_term!(pool, (< {targ0} {targ1}))
+      }
       Operator::Not => {
         let trans = compute_expected_int_term(&args[0], pool);
         build_term!(pool, (not {trans}))
+      }
+      Operator::And => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        build_term!(pool, (and {trans0} {trans1}))
+      }
+      Operator::Implies => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        build_term!(pool, (=> {trans0} {trans1}))
       }
       _ => {
         panic!("Unhandled int-blasting op: {}", op);
@@ -225,16 +248,16 @@ pub fn intblast_bounds(RuleArgs { conclusion, pool,  ..}: RuleArgs) -> RuleResul
   let (t1, b1) = match_term_err!((not (>= t b)) = upper)?; 
   let bv_var_0 = match_term_err!((ubv_to_int bv_var) = t0)?;
   let bv_var_1 = match_term_err!((ubv_to_int bv_var) = t1)?;
-  assert_eq(bv_var_0, bv_var_1);
+  assert_eq(bv_var_0, bv_var_1)?;
   let bw = get_size(&bv_var_0, pool);
   let zero_term = pool.add(Term::new_int(0));
-  let pow_term = pool.add(Term::new_int(bw));
+  let pow_term = pool.add(Term::new_int(two.pow(bw)));
   match b0.as_ref() {
-      Term::Const(Constant::Integer(val0)) => {
+      Term::Const(Constant::Integer(_)) => {
         match b1.as_ref() {
-          Term::Const(Constant::Integer(val1)) => {
-            assert_eq(b0, &zero_term);
-            assert_eq(b1, &pow_term);
+          Term::Const(Constant::Integer(_)) => {
+            assert_eq(b0, &zero_term)?;
+            assert_eq(b1, &pow_term)?;
           }
           _ => {
               println!("panda");

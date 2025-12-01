@@ -1,0 +1,8 @@
+(set-logic QF_BV)
+(declare-fun T4_180 () (_ BitVec 32))
+(assert (and 
+(= (bvmul T4_180 (_ bv1056 32)) (_ bv0 32)) 
+(not (= (bvmul T4_180 (_ bv1408 32)) (_ bv0 32))) 
+)
+)
+(check-sat)

@@ -1,0 +1,8 @@
+(assume a0 (bvugt (bvcomp _x15 _x15) (bvcomp _x15 _x15)))
+(step t0 (cl (not (= (bvugt (bvcomp _x15 _x15) (bvcomp _x15 _x15)) false)) (not (bvugt (bvcomp _x15 _x15) (bvcomp _x15 _x15))) false) :rule equiv_pos2)
+(step t1 (cl (= (bvugt (bvcomp _x15 _x15) (bvcomp _x15 _x15)) (bvult (bvcomp _x15 _x15) (bvcomp _x15 _x15)))) :rule hole :args ("TRUST_THEORY_REWRITE" (= (bvugt (bvcomp _x15 _x15) (bvcomp _x15 _x15)) (bvult (bvcomp _x15 _x15) (bvcomp _x15 _x15))) 4 6))
+(step t2 (cl (= (bvult (bvcomp _x15 _x15) (bvcomp _x15 _x15)) false)) :rule hole :args ("TRUST_THEORY_REWRITE" (= (bvult (bvcomp _x15 _x15) (bvcomp _x15 _x15)) false) 4 6))
+(step t3 (cl (= (bvugt (bvcomp _x15 _x15) (bvcomp _x15 _x15)) false)) :rule trans :premises (t1 t2))
+(step t4 (cl false) :rule resolution :premises (t0 t3 a0))
+(step t5 (cl (not false)) :rule false)
+(step t6 (cl) :rule resolution :premises (t4 t5))
