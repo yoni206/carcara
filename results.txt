@@ -1,15 +1,15 @@
 /home/ubuntu/git/carcara/mytests/bv-int-collapse1.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv-int-collapse2.smt2.alethe: 0
-/home/ubuntu/git/carcara/mytests/bv2int-isabelle.smt2.alethe: 101
-/home/ubuntu/git/carcara/mytests/bv2nat-ground.smt2.alethe: 101
-/home/ubuntu/git/carcara/mytests/bv2nat-simp-range.smt2.alethe: 101
+/home/ubuntu/git/carcara/mytests/bv2int-isabelle.smt2.alethe: 101 (theory combination)
+/home/ubuntu/git/carcara/mytests/bv2nat-ground.smt2.alethe: 101 (theory combination)
+/home/ubuntu/git/carcara/mytests/bv2nat-simp-range.smt2.alethe: 101 (theory combination)
 /home/ubuntu/git/carcara/mytests/bv_to_int1.smt2.alethe: 0
-/home/ubuntu/git/carcara/mytests/bv_to_int_10084.smt2.alethe: 101
-/home/ubuntu/git/carcara/mytests/bv_to_int_10084_forall.smt2.alethe: 1
-/home/ubuntu/git/carcara/mytests/bv_to_int_5230_binary.smt2.alethe: 1
-/home/ubuntu/git/carcara/mytests/bv_to_int_5230_missing_op.smt2.alethe: 1
-/home/ubuntu/git/carcara/mytests/bv_to_int_5230_shift_const.smt2.alethe: 1
-/home/ubuntu/git/carcara/mytests/bv_to_int_and_or.smt2.alethe: 1
+/home/ubuntu/git/carcara/mytests/bv_to_int_10084.smt2.alethe: 101 (overflow)
+/home/ubuntu/git/carcara/mytests/bv_to_int_10084_forall.smt2.alethe: 1 (quantifiers)
+/home/ubuntu/git/carcara/mytests/bv_to_int_5230_binary.smt2.alethe: 1 (empty proof)
+/home/ubuntu/git/carcara/mytests/bv_to_int_5230_missing_op.smt2.alethe: (quantifier)
+/home/ubuntu/git/carcara/mytests/bv_to_int_5230_shift_const.smt2.alethe: 1 (empty proof)
+/home/ubuntu/git/carcara/mytests/bv_to_int_and_or.smt2.alethe: 1 (empty proof)
 /home/ubuntu/git/carcara/mytests/bv_to_int_ashr.smt2.alethe: 101
 /home/ubuntu/git/carcara/mytests/bv_to_int_bitwise.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv_to_int_bvmul2.smt2.alethe: 1

@@ -195,6 +195,9 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         }
         ite
       },
+      Operator::BvAShr => {
+
+      },
       Operator::BvSLt => {
         let size = get_size(&args[0], pool);  
         let targ0 = compute_expected_int_term(&args[0], pool);
