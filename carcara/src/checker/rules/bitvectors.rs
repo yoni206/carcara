@@ -153,7 +153,24 @@ fn uts(x: &Rc<Term>, bv_size: u32,  pool: &mut dyn TermPool) -> Rc<Term> {
   build_term!(pool, (- {x.clone()} {ite.clone()}))
 }
 
-
+fn bvlshr(x: &Rc<Term>, y: &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
+        let two : u32 = 2;
+        let size = get_size(x, pool);  
+        let zero = pool.add(Term::new_int(0));
+        let mut ite = zero;
+        let mut body;
+        let x = compute_expected_int_term(x, pool);
+        let y = compute_expected_int_term(y, pool);
+        for i in 0..size {
+          let i_term = pool.add(Term::new_int(i));
+          let int_pow = two.pow(i);
+          let pow_term = pool.add(Term::new_int(int_pow));
+          body = build_term!(pool, (div {x.clone()} {pow_term}));
+          let eq = build_term!(pool, (= {y.clone()} {i_term}));
+          ite = build_term!(pool, (ite {eq} {body} {ite}));
+        }
+        ite
+}
 
 fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
   let two : u32 = 2;
@@ -179,25 +196,33 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         modulus
       },
       Operator::BvLShr => {
-        let size = get_size(&args[0], pool);  
-        let zero = pool.add(Term::new_int(0));
-        let mut ite = zero;
-        let mut body;
-        let x = compute_expected_int_term(&args[0], pool);
-        let y = compute_expected_int_term(&args[1], pool);
-        for i in 0..size {
-          let i_term = pool.add(Term::new_int(i));
-          let int_pow = two.pow(i);
-          let pow_term = pool.add(Term::new_int(int_pow));
-          body = build_term!(pool, (div {x.clone()} {pow_term}));
-          let eq = build_term!(pool, (= {y.clone()} {i_term}));
-          ite = build_term!(pool, (ite {eq} {body} {ite}));
-        }
-        ite
+        let bvlshr_trans = bvlshr(&args[0], &args[1], pool);
+        bvlshr_trans
       },
       Operator::BvAShr => {
-
+        let size = get_size(&args[0], pool);  
+        let x = compute_expected_int_term(&args[0], pool);
+        let int_pow1 = two.pow(size - 1);
+        let mins = pool.add(Term::new_int(int_pow1));
+        let lt = build_term!(pool, (< {x.clone()} {mins}));
+        let bvnotx = build_term!(pool, (bvnot {args[0].clone()}));
+        let lshr1 = bvlshr(&args[0], &args[1], pool);
+        let lshr2 = bvlshr(&bvnotx, &args[1], pool);
+        let pow2m1 = two.pow(size) - 1;
+        let pow2m1_term = pool.add(Term::new_int(pow2m1));
+        let bvnot = build_term!(pool, (- { pow2m1_term} {lshr2}));
+        let ashr = build_term!(pool, (ite {lt} {lshr1.clone()} {bvnot}));
+        ashr
+        
       },
+      Operator::BvNot => {
+        let size = get_size(&args[0], pool);  
+        let pow2_size_int = two.pow(size);
+        let pow2_size_term = pool.add(Term::new_int(pow2_size_int));
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let minus = build_term!(pool, (- {pow2_size_term} {trans0}));
+        minus
+      }
       Operator::BvSLt => {
         let size = get_size(&args[0], pool);  
         let targ0 = compute_expected_int_term(&args[0], pool);
