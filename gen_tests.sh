@@ -10,3 +10,8 @@ for f in `cat list.txt`
     timeout 3 ~/git/cvc5/build/bin/cvc5 $f --solve-bv-as-int=sum --dump-proofs --proof-format=alethe --dag-thresh=0 | tail -n+3 | head -n-1 > $SCRIPT_DIR/mytests/$base.alethe
     cat $f |grep -v '^;' > $SCRIPT_DIR/mytests/$base
   done
+
+f="/home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_bvmul2.smt2"
+echo "no timeout, second attempt: $f"
+base=$(basename "$f")          
+~/git/cvc5/build/bin/cvc5 $f --solve-bv-as-int=sum --dump-proofs --proof-format=alethe --dag-thresh=0 | tail -n+3 | head -n-1 > $SCRIPT_DIR/mytests/$base.alethe

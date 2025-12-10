@@ -217,10 +217,10 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       },
       Operator::BvNot => {
         let size = get_size(&args[0], pool);  
-        let pow2_size_int = two.pow(size);
-        let pow2_size_term = pool.add(Term::new_int(pow2_size_int));
+        let pow2m1_int = two.pow(size) - 1;
+        let pow2m1_term = pool.add(Term::new_int(pow2m1_int));
         let trans0 = compute_expected_int_term(&args[0], pool);
-        let minus = build_term!(pool, (- {pow2_size_term} {trans0}));
+        let minus = build_term!(pool, (- {pow2m1_term} {trans0}));
         minus
       }
       Operator::BvSLt => {
