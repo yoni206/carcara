@@ -12,15 +12,14 @@
 /home/ubuntu/git/carcara/mytests/bv_to_int_and_or.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/bv_to_int_ashr.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv_to_int_bitwise.smt2.alethe: 0
-/home/ubuntu/git/carcara/mytests/bv_to_int_bvmul2.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/bv_to_int_bvuf_to_intuf_smtlib.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/bv_to_int_check_bvsgt_bvlshr0_4bit.smt2.minimized.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/bv_to_int_check_ne_bvlshr0_4bit.smt2.minimized.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/bv_to_int_inc1.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv_to_int_mask_array_1.smt2.alethe: 1
-/home/ubuntu/git/carcara/mytests/bv_to_int_proj_417.smt2.alethe: 1
+/home/ubuntu/git/carcara/mytests/bv_to_int_proj_417.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv_to_int_quant1.smt2.alethe: 1
-/home/ubuntu/git/carcara/mytests/bv_to_int_zext.smt2.alethe: 1
+/home/ubuntu/git/carcara/mytests/bv_to_int_zext.smt2.alethe: 101
 /home/ubuntu/git/carcara/mytests/iand-native-2.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/pow2-pow-isabelle.smt2.alethe: 1
 /home/ubuntu/git/carcara/mytests/saddo3.smt2.alethe: 1

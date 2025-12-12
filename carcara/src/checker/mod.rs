@@ -181,8 +181,6 @@ impl<'c> ProofChecker<'c> {
                     }
                 }
                 ProofCommand::Assume { id, term } => {
-                    println!("id: {id}");
-                    println!("term: {term}");
                     if !self.check_assume(id, term, &problem.premises, &iter, &mut stats) {
                         return Err(Error::Checker {
                             inner: CheckerError::Assume(term.clone()),
@@ -213,11 +211,9 @@ impl<'c> ProofChecker<'c> {
         // Some subproofs contain `assume` commands inside them. These don't refer to the original
         // problem premises, but are instead local assumptions that are discharged by the subproof's
         // final step, so we ignore the `assume` command if it is inside a subproof.
-        println!("panda 1");
         if iter.is_in_subproof() {
             return true;
         }
-        println!("panda 2");
 
         if premises.contains(term) {
             if let Some(s) = stats {
@@ -229,21 +225,16 @@ impl<'c> ProofChecker<'c> {
             }
             return true;
         }
-        println!("panda 3");
 
         if self.config.elaborated {
             return false;
         }
-        println!("panda 4");
 
         let mut found = false;
         let mut polyeq_time = Duration::ZERO;
         let mut core_time = Duration::ZERO;
 
-        println!("panda 5");
         for p in premises {
-            println!("panda p: {p}");
-            println!("panda term: {term}");
             let mut this_polyeq_time = Duration::ZERO;
 
             let mut comp = Polyeq::new().mod_reordering(true).mod_nary(true);
@@ -264,7 +255,6 @@ impl<'c> ProofChecker<'c> {
         if !found {
             return false;
         };
-        println!("panda 6");
 
         if let Some(s) = &mut stats {
             let time = time.elapsed();
@@ -275,7 +265,6 @@ impl<'c> ProofChecker<'c> {
             s.results
                 .add_assume_measurement(s.file_name, id, false, time);
         }
-        println!("panda 7");
 
         true
     }

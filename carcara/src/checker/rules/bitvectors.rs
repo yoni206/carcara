@@ -245,10 +245,21 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let trans1 = compute_expected_int_term(&args[1], pool);
         build_term!(pool, (and {trans0} {trans1}))
       }
+      Operator::Or => {
+        let mut new_args: Vec<Rc<Term>> = Vec::new();
+        for arg in args {
+          let trans_arg = compute_expected_int_term(arg, pool);
+          new_args.push(trans_arg.clone());
+        }
+        pool.add(Term::Op(Operator::Or, new_args))
+      }
       Operator::Implies => {
         let trans0 = compute_expected_int_term(&args[0], pool);
         let trans1 = compute_expected_int_term(&args[1], pool);
         build_term!(pool, (=> {trans0} {trans1}))
+      }
+      Operator::UBvToInt => {
+        bv_term.clone()
       }
       _ => {
         panic!("Unhandled int-blasting op: {}", op);
@@ -268,10 +279,7 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
 
 pub fn intblast_bounds(RuleArgs { conclusion, pool,  ..}: RuleArgs) -> RuleResult {
   let two : u32 = 2;
-  println!("panda {:?}", conclusion);
   let (lower, upper) = match_term_err!((and lower upper) = &conclusion[0])?;
-  println!("panda {:?}", lower);
-  println!("panda {:?}", upper);
   let (t0, b0) = match_term_err!((>= t b) = lower)?; 
   let (t1, b1) = match_term_err!((not (>= t b)) = upper)?; 
   let bv_var_0 = match_term_err!((ubv_to_int bv_var) = t0)?;
@@ -288,12 +296,10 @@ pub fn intblast_bounds(RuleArgs { conclusion, pool,  ..}: RuleArgs) -> RuleResul
             assert_eq(b1, &pow_term)?;
           }
           _ => {
-              println!("panda");
           }
         }
     }
     _ => {
-      println!("panda");
     }
 
   }
