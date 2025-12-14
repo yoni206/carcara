@@ -173,7 +173,7 @@ fn bvlshr(x: &Rc<Term>, y: &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
 }
 
 fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
-  let two : u32 = 2;
+  let two = rug::Integer::from(2);
   match bv_term.as_ref() {
     Term::Op(op, args) => match op {
       Operator::Equals => {
@@ -181,16 +181,16 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       }, 
       Operator::BvAdd => {
         let size = get_size(&args[0], pool);  
-        let int_pow = two.pow(size);
-        let pow_term = pool.add(Term::new_int(int_pow));
+        let bigpow = rug::ops::Pow::pow(&two, bw);
+        let pow_term = pool.add(Term::new_int(bigpow));
         let addition = build_term!(pool, (+ {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}));
         let modulus = build_term!(pool, (mod {addition} {pow_term}));
         modulus
       },
       Operator::BvMul => {
         let size = get_size(&args[0], pool);  
-        let int_pow = two.pow(size);
-        let pow_term = pool.add(Term::new_int(int_pow));
+        let bigpow = rug::ops::Pow::pow(&two, bw);
+        let pow_term = pool.add(Term::new_int(bigpow));
         let mul = build_term!(pool, (* {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}));
         let modulus = build_term!(pool, (mod {mul} {pow_term}));
         modulus
@@ -241,9 +241,12 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         build_term!(pool, (not {trans}))
       }
       Operator::And => {
-        let trans0 = compute_expected_int_term(&args[0], pool);
-        let trans1 = compute_expected_int_term(&args[1], pool);
-        build_term!(pool, (and {trans0} {trans1}))
+        let mut new_args: Vec<Rc<Term>> = Vec::new();
+        for arg in args {
+          let trans_arg = compute_expected_int_term(arg, pool);
+          new_args.push(trans_arg.clone());
+        }
+        pool.add(Term::Op(Operator::And, new_args))
       }
       Operator::Or => {
         let mut new_args: Vec<Rc<Term>> = Vec::new();
@@ -259,7 +262,23 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         build_term!(pool, (=> {trans0} {trans1}))
       }
       Operator::UBvToInt => {
-        bv_term.clone()
+        let trans = compute_expected_int_term(&args[0], pool);
+        trans.clone()
+      }
+      Operator::GreaterEq => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        build_term!(pool, (>= {trans0} {trans1}))
+      }
+      Operator::Add => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        build_term!(pool, (+ {trans0} {trans1}))
+      }
+      Operator::Mult => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        build_term!(pool, (* {trans0} {trans1}))
       }
       _ => {
         panic!("Unhandled int-blasting op: {}", op);
@@ -273,12 +292,10 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
     },
     _ => bv_term.clone()
   }
-
-
 }
 
 pub fn intblast_bounds(RuleArgs { conclusion, pool,  ..}: RuleArgs) -> RuleResult {
-  let two : u32 = 2;
+  let two = rug::Integer::from(2);
   let (lower, upper) = match_term_err!((and lower upper) = &conclusion[0])?;
   let (t0, b0) = match_term_err!((>= t b) = lower)?; 
   let (t1, b1) = match_term_err!((not (>= t b)) = upper)?; 
@@ -287,7 +304,8 @@ pub fn intblast_bounds(RuleArgs { conclusion, pool,  ..}: RuleArgs) -> RuleResul
   assert_eq(bv_var_0, bv_var_1)?;
   let bw = get_size(&bv_var_0, pool);
   let zero_term = pool.add(Term::new_int(0));
-  let pow_term = pool.add(Term::new_int(two.pow(bw)));
+  let bigpow = rug::ops::Pow::pow(&two, bw);
+  let pow_term = pool.add(Term::new_int(bigpow));
   match b0.as_ref() {
       Term::Const(Constant::Integer(_)) => {
         match b1.as_ref() {
