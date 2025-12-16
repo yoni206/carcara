@@ -1,8 +1,8 @@
 /home/ubuntu/git/carcara/mytests/bv-int-collapse1.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv-int-collapse2.smt2.alethe: 0
-/home/ubuntu/git/carcara/mytests/bv2int-isabelle.smt2.alethe: 101
-/home/ubuntu/git/carcara/mytests/bv2nat-ground.smt2.alethe: 101
-/home/ubuntu/git/carcara/mytests/bv2nat-simp-range.smt2.alethe: 101
+/home/ubuntu/git/carcara/mytests/bv2int-isabelle.smt2.alethe: 0
+/home/ubuntu/git/carcara/mytests/bv2nat-ground.smt2.alethe: 0
+/home/ubuntu/git/carcara/mytests/bv2nat-simp-range.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv_to_int1.smt2.alethe: 0
 /home/ubuntu/git/carcara/mytests/bv_to_int_10084.smt2.alethe: 101
 /home/ubuntu/git/carcara/mytests/bv_to_int_10084_forall.smt2.alethe: 1

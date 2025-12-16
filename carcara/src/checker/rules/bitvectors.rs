@@ -2,7 +2,7 @@ use crate::{
     ast::{pool::TermPool, Operator, ParamOperator, Rc, Sort, Term},
     checker::rules::assert_clause_len,
 };
-
+use rug::{Complete};
 
 use crate::{
     ast::*
@@ -181,7 +181,7 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       }, 
       Operator::BvAdd => {
         let size = get_size(&args[0], pool);  
-        let bigpow = rug::ops::Pow::pow(&two, bw);
+        let bigpow = rug::ops::Pow::pow(&two, size);
         let pow_term = pool.add(Term::new_int(bigpow));
         let addition = build_term!(pool, (+ {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}));
         let modulus = build_term!(pool, (mod {addition} {pow_term}));
@@ -189,7 +189,7 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       },
       Operator::BvMul => {
         let size = get_size(&args[0], pool);  
-        let bigpow = rug::ops::Pow::pow(&two, bw);
+        let bigpow = rug::ops::Pow::pow(&two, size);
         let pow_term = pool.add(Term::new_int(bigpow));
         let mul = build_term!(pool, (* {compute_expected_int_term(&args[0], pool)} {compute_expected_int_term(&args[1], pool)}));
         let modulus = build_term!(pool, (mod {mul} {pow_term}));
@@ -202,13 +202,14 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       Operator::BvAShr => {
         let size = get_size(&args[0], pool);  
         let x = compute_expected_int_term(&args[0], pool);
-        let int_pow1 = two.pow(size - 1);
-        let mins = pool.add(Term::new_int(int_pow1));
+        let bigpow = rug::ops::Pow::pow(&two, size-1);
+        let mins = pool.add(Term::new_int(bigpow));
         let lt = build_term!(pool, (< {x.clone()} {mins}));
         let bvnotx = build_term!(pool, (bvnot {args[0].clone()}));
         let lshr1 = bvlshr(&args[0], &args[1], pool);
         let lshr2 = bvlshr(&bvnotx, &args[1], pool);
-        let pow2m1 = two.pow(size) - 1;
+        let pow2 = rug::ops::Pow::pow(&two, size).complete();
+        let pow2m1 = pow2 - 1;
         let pow2m1_term = pool.add(Term::new_int(pow2m1));
         let bvnot = build_term!(pool, (- { pow2m1_term} {lshr2}));
         let ashr = build_term!(pool, (ite {lt} {lshr1.clone()} {bvnot}));
@@ -217,8 +218,9 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       },
       Operator::BvNot => {
         let size = get_size(&args[0], pool);  
-        let pow2m1_int = two.pow(size) - 1;
-        let pow2m1_term = pool.add(Term::new_int(pow2m1_int));
+        let pow2 = rug::ops::Pow::pow(&two, size).complete();
+        let pow2m1 = pow2 - 1;
+        let pow2m1_term = pool.add(Term::new_int(pow2m1));
         let trans0 = compute_expected_int_term(&args[0], pool);
         let minus = build_term!(pool, (- {pow2m1_term} {trans0}));
         minus
