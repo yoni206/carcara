@@ -214,7 +214,6 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let bvnot = build_term!(pool, (- { pow2m1_term} {lshr2}));
         let ashr = build_term!(pool, (ite {lt} {lshr1.clone()} {bvnot}));
         ashr
-        
       },
       Operator::BvNot => {
         let size = get_size(&args[0], pool);  
@@ -237,6 +236,47 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let targ0 = compute_expected_int_term(&args[0], pool);
         let targ1 = compute_expected_int_term(&args[1], pool);
         build_term!(pool, (< {targ0} {targ1}))
+      }
+      Operator::BvConcat => {
+        let targ0 = compute_expected_int_term(&args[0], pool);
+        let targ1 = compute_expected_int_term(&args[1], pool);
+        let size = get_size(&args[1], pool);  
+        let pow_int = rug::ops::Pow::pow(&two, size).complete();
+        let pow = pool.add(Term::new_int(pow_int));
+        let mul = build_term!(pool, (* {targ0} {pow}));
+        let plus = build_term!(pool, (+ {mul} {targ1}));
+        plus
+      }
+      Operator::BvAnd => {
+        let zero_int = rug::Integer::from(2);
+        let zero = pool.add(Term::new_int(zero_int));
+        let one_int = rug::Integer::from(1);
+        let one = pool.add(Term::new_int(one_int));
+        let two_term = pool.add(Term::new_int(&two));
+        let mut sum = zero.clone();
+        let targ0 = compute_expected_int_term(&args[0], pool);
+        let targ1 = compute_expected_int_term(&args[1], pool);
+        let size = get_size(&args[1], pool);  
+        for i in 0..size {
+            
+          let pow_int = rug::ops::Pow::pow(&two, i).complete();
+          let pow = pool.add(Term::new_int(pow_int));
+          let div1 = build_term!(pool, (div {targ0.clone()} {pow.clone()}));
+          let div2 = build_term!(pool, (div {targ1.clone()} {pow.clone()}));
+          let extract1 = build_term!(pool, (mod {div1} {two_term.clone()}));
+          let extract2 = build_term!(pool, (mod {div2} {two_term.clone()}));
+          let eq1 = build_term!(pool, (= {extract1} {one.clone()} ));
+          let eq2 = build_term!(pool, (= {extract2} {one.clone()} ));
+          let cond = build_term!(pool, (and {eq1} {eq2}));
+
+          let then_branch = one.clone();
+          let else_branch = zero.clone();
+
+          let part = build_term!(pool, (ite {cond} {then_branch} {else_branch}));
+          let mul = build_term!(pool, (* {pow} {part}));
+          sum = build_term!(pool, (+ {sum} {mul}));
+        }
+        sum
       }
       Operator::Not => {
         let trans = compute_expected_int_term(&args[0], pool);
