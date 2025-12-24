@@ -125,8 +125,8 @@ pub fn extract(RuleArgs { conclusion, pool, .. }: RuleArgs) -> RuleResult {
 pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_clause_len(conclusion, 1)?;
   let (bv_term, int_term) = match_term_err!((= bv_term int_term) = &conclusion[0])?;
-  println!("bv_term: {:?}", bv_term);
-  println!("int_term: {:?}", int_term);
+  // println!("bv_term: {:?}", bv_term);
+  // println!("int_term: {:?}", int_term);
   let expected_int_term = compute_expected_int_term(bv_term, pool);
   assert_eq(int_term, &expected_int_term)
 }
