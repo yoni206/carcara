@@ -125,8 +125,8 @@ pub fn extract(RuleArgs { conclusion, pool, .. }: RuleArgs) -> RuleResult {
 pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_clause_len(conclusion, 1)?;
   let (bv_term, int_term) = match_term_err!((= bv_term int_term) = &conclusion[0])?;
-  // println!("bv_term: {:?}", bv_term);
-  // println!("int_term: {:?}", int_term);
+  println!("bv_term: {:?}", bv_term);
+  println!("int_term: {:?}", int_term);
   let expected_int_term = compute_expected_int_term(bv_term, pool);
   assert_eq(int_term, &expected_int_term)
 }
@@ -263,6 +263,20 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let trans0 = compute_expected_int_term(&args[0], pool);
         let minus = build_term!(pool, (- {pow2m1_term} {trans0}));
         minus
+      }
+      Operator::BvNeg => {
+        let one_int = rug::Integer::from(1);
+        let one = pool.add(Term::new_int(one_int));
+        let size = get_size(&args[0], pool);  
+        let pow2 = rug::ops::Pow::pow(&two, size).complete();
+        let pow2_term = pool.add(Term::new_int(&pow2));
+        let pow2m1 = &pow2 - 1;
+        let pow2m1_term = pool.add(Term::new_int(pow2m1));
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let minus = build_term!(pool, (- {pow2m1_term} {trans0}));
+        let plus = build_term!(pool, (+ {minus} {one.clone()}));
+        let modu = build_term!(pool, (mod {plus} {pow2_term}));
+        modu
       }
       Operator::BvSLt => {
         let size = get_size(&args[0], pool);  
