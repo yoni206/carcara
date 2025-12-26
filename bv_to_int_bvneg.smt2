@@ -1,0 +1,10 @@
+(set-logic QF_BV)
+(declare-fun x () (_ BitVec 2))
+(declare-fun y () (_ BitVec 2))
+(assert (bvugt x (bvneg y)))
+(assert (bvugt y (bvneg x)))
+(assert (bvugt x (bvneg x)))
+(assert (bvugt y (bvneg y)))
+(assert (bvugt x y))
+
+(check-sat)

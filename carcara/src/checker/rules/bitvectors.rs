@@ -2,7 +2,9 @@ use crate::{
     ast::{pool::TermPool, Operator, ParamOperator, Rc, Sort, Term},
     checker::rules::assert_clause_len,
 };
-use rug::{Complete};
+
+
+use rug::Complete;
 
 use crate::{
     ast::*
@@ -235,6 +237,22 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let modulus = build_term!(pool, (mod {mul} {pow_term}));
         modulus
       },
+      Operator::BvUDiv => {
+        let two = rug::Integer::from(2);
+        let bw : u32 = get_size(&args[0], pool);
+        let pow2: rug::Integer = rug::ops::Pow::pow(&two, bw).complete();
+        let pow2m1 = pow2 - 1;
+
+        let zero = pool.add(Term::new_int(0));
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        
+        let div = build_term!(pool, (div {trans0.clone()} {trans1.clone()}));
+        let maxu = pool.add(Term::new_int(pow2m1));
+        let cond = build_term!(pool, (= {trans1} {zero}));
+        let ite = build_term!(pool, (ite {cond} {maxu} {div}));
+        ite
+      }
       Operator::BvLShr => {
         let bvlshr_trans = bvlshr(&args[0], &args[1], pool);
         bvlshr_trans
@@ -339,6 +357,12 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let trans0 = compute_expected_int_term(&args[0], pool);
         let trans1 = compute_expected_int_term(&args[1], pool);
         build_term!(pool, (=> {trans0} {trans1}))
+      }
+      Operator::Ite => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        let trans2 = compute_expected_int_term(&args[2], pool);
+        build_term!(pool, (ite {trans0} {trans1} {trans2}))
       }
       Operator::UBvToInt => {
         let trans = compute_expected_int_term(&args[0], pool);
