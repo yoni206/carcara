@@ -387,6 +387,14 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         panic!("Unhandled int-blasting op: {}", op);
       },
     },
+    Term::ParamOp {op, op_args, args} => match op {
+      ParamOperator::BvExtract => {
+        panic!("Unhandled int-blasting op: {}", op);
+      }
+      _ => {
+        panic!("Unhandled int-blasting op: {}", op);
+      }
+    },
     Term::Const(Constant::BitVec(value, _)) => {
       pool.add(Term::new_int(value))
     },
