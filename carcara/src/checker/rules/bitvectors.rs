@@ -389,7 +389,23 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
     },
     Term::ParamOp {op, op_args, args} => match op {
       ParamOperator::BvExtract => {
-        panic!("Unhandled int-blasting op: {}", op);
+        let high_opt = op_args[0].as_integer();
+        let low_opt = op_args[1].as_integer();
+        let high: u32 = high_opt
+           .and_then(|x| x.to_u32())      // Option<Integer> -> Option<i32>
+           .expect("no high or doesn't fit");
+        let low: u32 = low_opt
+           .and_then(|x| x.to_u32())      // Option<Integer> -> Option<i32>
+           .expect("no high or doesn't fit");
+        let sub = high - low + 1;
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let int_pow2_low = rug::ops::Pow::pow(&two, low).complete();
+        let int_pow2_sub = rug::ops::Pow::pow(&two, sub).complete();
+        let pow2_low = pool.add(Term::new_int(int_pow2_low));
+        let pow2_sub = pool.add(Term::new_int(int_pow2_sub));
+        let div = build_term!(pool, (div {trans0} {pow2_low}));
+        let modulus = build_term!(pool, (mod {div} {pow2_sub}));
+        modulus
       }
       _ => {
         panic!("Unhandled int-blasting op: {}", op);
