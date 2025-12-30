@@ -124,12 +124,45 @@ pub fn extract(RuleArgs { conclusion, pool, .. }: RuleArgs) -> RuleResult {
     Ok(())
 }
 
+pub fn binarize(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
+  match bv_term.as_ref() {
+    Term::Op(op, args) => match op {
+      Operator::BvAdd | Operator::BvMul | Operator::BvAnd | Operator::BvOr | Operator::BvXor | Operator::BvConcat => {
+        let n = args.len();
+        if n == 1 {
+            unreachable!();
+        } else if n == 2 {
+          bv_term.clone()
+        } else {
+          let mut res = args[0].clone();
+          for i in 1..n {
+            res = pool.add(Term::Op(*op, vec![res, args[i].clone()]))
+          }
+          res
+        }
+      },
+      _ =>  {
+          let n = args.len();
+          let mut new_vec = Vec::new();
+          for i in 0..n {
+            let bini = binarize(&args[i], pool);
+            new_vec.push(bini);
+          }
+          let res = pool.add(Term::Op(*op, new_vec));
+          res
+      }
+    }
+    _ => bv_term.clone()
+  }
+}
+
 pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_clause_len(conclusion, 1)?;
   let (bv_term, int_term) = match_term_err!((= bv_term int_term) = &conclusion[0])?;
   println!("bv_term: {:?}", bv_term);
   println!("int_term: {:?}", int_term);
-  let expected_int_term = compute_expected_int_term(bv_term, pool);
+  let binary = binarize(bv_term, pool);
+  let expected_int_term = compute_expected_int_term(&binary, pool);
   assert_eq(int_term, &expected_int_term)
 }
 
