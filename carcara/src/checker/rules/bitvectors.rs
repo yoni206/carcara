@@ -159,10 +159,11 @@ pub fn binarize(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
 pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   assert_clause_len(conclusion, 1)?;
   let (bv_term, int_term) = match_term_err!((= bv_term int_term) = &conclusion[0])?;
-  println!("bv_term: {:?}", bv_term);
-  println!("int_term: {:?}", int_term);
   let binary = binarize(bv_term, pool);
   let expected_int_term = compute_expected_int_term(&binary, pool);
+  println!("bv_term:           {:?}", bv_term);
+  println!("int_term:          {:?}", int_term);
+  println!("expected_int_term: {:?}", expected_int_term);
   assert_eq(int_term, &expected_int_term)
 }
 
@@ -260,6 +261,8 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       }, 
       Operator::BvAdd => {
         let res = bvadd(&args[0], &args[1], pool);
+        println!("panda bvadd bv_term: {:?}", bv_term);
+        println!("panda bvadd res: {:?}", res);
         res
       },
       Operator::BvMul => {
