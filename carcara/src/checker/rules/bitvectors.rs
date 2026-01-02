@@ -128,16 +128,22 @@ pub fn binarize(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc<Term> {
   match bv_term.as_ref() {
     Term::Op(op, args) => match op {
       Operator::BvAdd | Operator::BvMul | Operator::BvAnd | Operator::BvOr | Operator::BvXor | Operator::BvConcat => {
+        println!("inside binarize, bv_term:           {:?}", bv_term);
         let n = args.len();
         if n == 1 {
             unreachable!();
         } else if n == 2 {
-          bv_term.clone()
+          let bini0 = binarize(&args[0], pool);
+          let bini1 = binarize(&args[1], pool);
+          let res = pool.add(Term::Op(*op, vec![bini0, bini1]));
+          res
         } else {
           let mut res = args[0].clone();
           for i in 1..n {
-            res = pool.add(Term::Op(*op, vec![res, args[i].clone()]))
+            let bini = binarize(&args[i], pool);
+            res = pool.add(Term::Op(*op, vec![res, bini]))
           }
+          println!("inside binarize, res:           {:?}", &res);
           res
         }
       },
@@ -162,6 +168,7 @@ pub fn intblast(RuleArgs { conclusion, pool, ..}: RuleArgs) -> RuleResult {
   let binary = binarize(bv_term, pool);
   let expected_int_term = compute_expected_int_term(&binary, pool);
   println!("bv_term:           {:?}", bv_term);
+  println!("binary:           {:?}", binary);
   println!("int_term:          {:?}", int_term);
   println!("expected_int_term: {:?}", expected_int_term);
   assert_eq(int_term, &expected_int_term)
@@ -261,8 +268,6 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       }, 
       Operator::BvAdd => {
         let res = bvadd(&args[0], &args[1], pool);
-        println!("panda bvadd bv_term: {:?}", bv_term);
-        println!("panda bvadd res: {:?}", res);
         res
       },
       Operator::BvMul => {
@@ -346,6 +351,8 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         build_term!(pool, (< {targ0} {targ1}))
       }
       Operator::BvConcat => {
+         println!("concat args[0]:           {:?}", args[0]);
+         println!("concat args[1]:           {:?}", args[1]);
         let targ0 = compute_expected_int_term(&args[0], pool);
         let targ1 = compute_expected_int_term(&args[1], pool);
         let size = get_size(&args[1], pool);  
