@@ -184,10 +184,10 @@ fn get_size(x: &Rc<Term>, pool: &mut dyn TermPool) -> u32 {
 }
 
 fn uts(x: &Rc<Term>, bv_size: u32,  pool: &mut dyn TermPool) -> Rc<Term> {
-  let two : u32 = 2;
+  let two = rug::Integer::from(2);
   let bv_size_m_1 = bv_size - 1;
-  let int_pow_m_1 = two.pow(bv_size_m_1);
-  let int_pow = two.pow(bv_size);
+  let int_pow_m_1 = rug::ops::Pow::pow(&two, bv_size_m_1).complete();
+  let int_pow = rug::ops::Pow::pow(&two, bv_size).complete();
   let sign_min = pool.add(Term::new_int(int_pow_m_1));
   let pow2 = pool.add(Term::new_int(int_pow));
   let zero = pool.add(Term::new_int(0));
