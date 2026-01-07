@@ -1,6 +1,0 @@
-(set-logic QF_BV)
-(declare-fun x () (_ BitVec 2))
-(declare-fun y () (_ BitVec 2))
-(assert (bvugt (bvand x y) y))
-(assert (bvugt (bvand x y) x))
-(check-sat)
