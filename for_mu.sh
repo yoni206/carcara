@@ -1,0 +1,4 @@
+#!/bin/bash
+trap 'kill $(jobs -p)' SIGABRT
+./solve_and_check.sh ~/git/cvc5/build/bin/cvc5 target/debug/carcara
+# ~/git/cvc5/build/bin/cvc5 -i --

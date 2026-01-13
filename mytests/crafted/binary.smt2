@@ -4,3 +4,4 @@
 (declare-fun z () (_ BitVec 4))
 (assert (distinct (bvadd z y x) (bvadd x y z)))
 (check-sat)
+(exit)
