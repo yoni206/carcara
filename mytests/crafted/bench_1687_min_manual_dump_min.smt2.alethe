@@ -1,6 +1,6 @@
 (assume a0 (! (= #b00000000000000000000000000000000 (bvadd #b00000000000000000000000000000001 (concat #b000000000000000000000000000000 T #b0))) :named @p_1))
 (step t0 (cl (not (! (= @p_1 false) :named @p_2)) (not @p_1) false) :rule equiv_pos2)
-(step t1 (cl (! (= @p_1 (! (= 0 (! (mod (! (+ 1 (+ (! (* (! (+ (! (* 0 2) :named @p_21) (! (ubv_to_int T) :named @p_3)) :named @p_22) 2) :named @p_23) 0)) :named @p_24) 4294967296) :named @p_25)) :named @p_26)) :named @p_38)) :rule hole :args ("INT_BLASTER" "UNKNOWN_THEORY" @p_38))
+(step t1 (cl (= @p_1 (! (= 0 (! (mod (! (+ 1 (+ (! (* (! (+ (! (* 0 2) :named @p_21) (! (ubv_to_int T) :named @p_3)) :named @p_22) 2) :named @p_23) 0)) :named @p_24) 4294967296) :named @p_25)) :named @p_26))) :rule bv_intblast)
 (step t2 (cl (= 0 0)) :rule refl)
 (step t3 (cl (! (= @p_24 (! (+ @p_23 1) :named @p_29)) :named @p_37)) :rule hole :args ("TRUST_THEORY_REWRITE" @p_37 3 6))
 (step t4 (cl (! (= @p_21 0) :named @p_36)) :rule hole :args ("TRUST_THEORY_REWRITE" @p_36 3 6))

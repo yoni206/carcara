@@ -3,7 +3,7 @@ SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 rm $SCRIPT_DIR/mytests/generated/*.smt2
 rm $SCRIPT_DIR/mytests/generated/*.alethe
 rm $SCRIPT_DIR/mytests/crafted/*.alethe
-grep -lrI solve-bv-as-int ~/git/cvc5/test/regress/cli | xargs grep -l unsat | sort | uniq > list.txt
+grep -lrI solve-bv-as-int ~/git/cvc5/test/regress/cli | xargs grep -l EXPECT.*unsat | sort | uniq > list.txt
 find $SCRIPT_DIR/mytests/crafted -name "*.smt2" >> list.txt
 
 for f in `cat list.txt | grep cvc5.*regress`

@@ -2,11 +2,7 @@
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv-int-collapse2.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv2nat-simp-range.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int1.smt2
-/home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_12340.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_12340_manual.smt2
-/home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_5230_binary.smt2
-/home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_5230_missing_op.smt2
-/home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_5230_shift_const.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_bvmul2.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_proj_417.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/bv/bv_to_int_zext.smt2
@@ -22,7 +18,6 @@
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/nl/pow2-pow-isabelle.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/bv/bv2nat-ground.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/bv/bv_to_int_10084.smt2
-/home/ubuntu/git/cvc5/test/regress/cli/regress1/bv/bv_to_int_10084_forall.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/bv2int-isabelle.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/nl/iand-native-2.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress2/bv_to_int_ashr.smt2
