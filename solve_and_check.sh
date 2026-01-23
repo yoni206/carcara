@@ -2,10 +2,9 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 CVC5_BIN=`realpath $1`
 CARCARA_BIN=`realpath $2`
-BENCHMARK=`realpath /tmp/tmp.smt2`
-PROOF=`realpath /tmp/tmp.smt2.alethe`
+BENCHMARK=`realpath $3`
+PROOF=`realpath /tmp/tmp.alethe`
 
-tee "$BENCHMARK" | $CVC5_BIN -i --solve-bv-as-int=sum --dump-proofs --proof-format=alethe --err=$PROOF.tmp
-cat $PROOF.tmp | tail -n+3 | head -n-1 > $PROOF
-$CARCARA_BIN check --expand-let-bindings -i $PROOF
+$CVC5_BIN $BENCHMARK --solve-bv-as-int=sum --dump-proofs --proof-format=alethe | tail -n+3 | head -n-1 > $PROOF
+$CARCARA_BIN check --expand-let-bindings -i $PROOF $BENCHMARK
 exit $?

@@ -294,6 +294,26 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let ite = build_term!(pool, (ite {cond} {maxu} {div}));
         ite
       }
+      Operator::BvShl => {
+        let two : u32 = 2;
+        let x = &args[0].clone();
+        let y = &args[1].clone();
+        let size = get_size(x, pool);  
+        let zero = pool.add(Term::new_int(0));
+        let mut ite = zero;
+        let mut body;
+        let x = compute_expected_int_term(x, pool);
+        let y = compute_expected_int_term(y, pool);
+        for i in 0..size {
+          let i_term = pool.add(Term::new_int(i));
+          let int_pow = two.pow(i);
+          let pow_term = pool.add(Term::new_int(int_pow));
+          body = build_term!(pool, (* {x.clone()} {pow_term}));
+          let eq = build_term!(pool, (= {y.clone()} {i_term}));
+          ite = build_term!(pool, (ite {eq} {body} {ite}));
+        }
+        ite
+      }
       Operator::BvLShr => {
         let bvlshr_trans = bvlshr(&args[0], &args[1], pool);
         bvlshr_trans
