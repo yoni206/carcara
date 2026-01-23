@@ -1,0 +1,8 @@
+(set-logic QF_BV)
+(declare-fun x () (_ BitVec 4))
+(declare-fun y () (_ BitVec 4))
+(declare-fun z () (_ BitVec 4))
+(assert (= (bvurem x x) x))
+(assert (= (bvurem x x) x))
+(assert (distinct (ite (xor (bvule x y) (bvugt x y)) x z) x))
+(check-sat)

@@ -424,6 +424,14 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         }
         pool.add(Term::Op(Operator::Or, new_args))
       }
+      Operator::Xor => {
+        let mut new_args: Vec<Rc<Term>> = Vec::new();
+        for arg in args {
+          let trans_arg = compute_expected_int_term(arg, pool);
+          new_args.push(trans_arg.clone());
+        }
+        pool.add(Term::Op(Operator::Xor, new_args))
+      }
       Operator::Implies => {
         let trans0 = compute_expected_int_term(&args[0], pool);
         let trans1 = compute_expected_int_term(&args[1], pool);
