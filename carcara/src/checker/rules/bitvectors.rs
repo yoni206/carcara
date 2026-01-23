@@ -294,6 +294,16 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let ite = build_term!(pool, (ite {cond} {maxu} {div}));
         ite
       }
+      Operator::BvURem => {
+        let zero = pool.add(Term::new_int(0));
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let trans1 = compute_expected_int_term(&args[1], pool);
+        
+        let div = build_term!(pool, (mod {trans0.clone()} {trans1.clone()}));
+        let cond = build_term!(pool, (= {trans1} {zero}));
+        let ite = build_term!(pool, (ite {cond} {trans0.clone()} {div}));
+        ite
+      }
       Operator::BvShl => {
         let two : u32 = 2;
         let x = &args[0].clone();
