@@ -486,6 +486,28 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let modulus = build_term!(pool, (mod {div} {pow2_sub}));
         modulus
       }
+      ParamOperator::ZeroExtend => {
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        trans0
+      }
+      ParamOperator::SignExtend => {
+        let bv_size = get_size(&args[0], pool);  
+        let trans0 = compute_expected_int_term(&args[0], pool);
+        let two = rug::Integer::from(2);
+        let bv_size_m_1 = bv_size - 1;
+        let int_pow_m_1 = rug::ops::Pow::pow(&two, bv_size_m_1).complete();
+        let int_pow2 = rug::ops::Pow::pow(&two, bv_size).complete();
+        let int_pow2_m_1 = int_pow2.clone() - 1;
+        let minsigned = pool.add(Term::new_int(int_pow_m_1));
+        let maxunsigned = pool.add(Term::new_int(int_pow2_m_1));
+        let pow2 = pool.add(Term::new_int(int_pow2));
+        let condition = build_term!(pool, (< {trans0.clone()} {minsigned}));
+        let b1 = trans0.clone();
+        let mul = build_term!(pool, (* {maxunsigned} {pow2}));
+        let b2 = build_term!(pool, (+ {mul} {trans0.clone()}));
+        let ite = build_term!(pool, (ite {condition} {b1} {b2}));
+        ite
+      }
       _ => {
         panic!("Unhandled int-blasting op: {}", op);
       }
