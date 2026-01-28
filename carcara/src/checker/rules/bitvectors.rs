@@ -516,9 +516,22 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
       pool.add(Term::new_int(value))
     },
     Term::Var(_, _) => {
-      build_term!(pool, (ubv_to_int {bv_term.clone()}))
+      let s = pool.sort(bv_term).as_sort().cloned().unwrap();
+      match s {
+          Sort::BitVec(_) => {
+            build_term!(pool, (ubv_to_int {bv_term.clone()}))
+          }
+          Sort::Bool => {
+            bv_term.clone()
+          }
+          _ => {
+            panic!("Variables of sort other than BV are not supported.");
+          }
+      }
     },
-    _ => bv_term.clone()
+    _ => {
+        panic!("Unhandled int-blasting case for term: {}", bv_term);
+    }
   }
 }
 

@@ -18,6 +18,7 @@
 /home/ubuntu/git/cvc5/test/regress/cli/regress0/nl/pow2-pow-isabelle.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/bv/bv2nat-ground.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/bv/bv_to_int_10084.smt2
+/home/ubuntu/git/cvc5/test/regress/cli/regress1/bv/bv_to_int_10084_forall.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/bv2int-isabelle.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress1/nl/iand-native-2.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress2/bv_to_int_ashr.smt2
@@ -30,11 +31,16 @@
 /home/ubuntu/git/cvc5/test/regress/cli/regress3/bv_to_int_check_ne_bvlshr0_4bit.smt2.minimized.smt2
 /home/ubuntu/git/cvc5/test/regress/cli/regress3/bv_to_int_quant1.smt2
 /home/ubuntu/git/carcara/mytests/crafted/ite.smt2
+/home/ubuntu/git/carcara/mytests/crafted/bvshl.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bench_1687_min_manual_dump_min.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bv_to_int_bvneg.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bench_409.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bvudiv.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bench_5552_min_manual_min_manual.smt2
+/home/ubuntu/git/carcara/mytests/crafted/extend.smt2
+/home/ubuntu/git/carcara/mytests/crafted/xor.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bv_to_int_bvand.smt2
 /home/ubuntu/git/carcara/mytests/crafted/extract.smt2
+/home/ubuntu/git/carcara/mytests/crafted/urem.smt2
 /home/ubuntu/git/carcara/mytests/crafted/binary.smt2
+/home/ubuntu/git/carcara/mytests/crafted/channelRoute.in2.smt2

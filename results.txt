@@ -1,6 +1,7 @@
 mytests/generated/bv_to_int_ashr.smt2.alethe: 0
 mytests/generated/umulo1.smt2.alethe: 1
 mytests/generated/bv_to_int_10084.smt2.alethe: 0
+mytests/generated/bv_to_int_10084_forall.smt2.alethe: 1
 mytests/generated/bv_to_int_inc1.smt2.alethe: 0
 mytests/generated/bv_to_int_check_ne_bvlshr0_4bit.smt2.minimized.smt2.alethe: 1
 mytests/generated/smulo1.smt2.alethe: 1
@@ -35,6 +36,11 @@ mytests/crafted/bv_to_int_bvneg.smt2.alethe: 0
 mytests/crafted/bvudiv.smt2.alethe: 0
 mytests/crafted/ite.smt2.alethe: 0
 mytests/crafted/extract.smt2.alethe: 0
+mytests/crafted/bvshl.smt2.alethe: 1
 mytests/crafted/bench_5552_min_manual_min_manual.smt2.alethe: 0
+mytests/crafted/urem.smt2.alethe: 0
 mytests/crafted/bench_409.smt2.alethe: 0
+mytests/crafted/channelRoute.in2.smt2.alethe: 1
+mytests/crafted/xor.smt2.alethe: 0
+mytests/crafted/extend.smt2.alethe: 0
 mytests/crafted/bench_1687_min_manual_dump_min.smt2.alethe: 0
