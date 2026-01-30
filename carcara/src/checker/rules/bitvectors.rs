@@ -404,6 +404,18 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let modulus = build_term!(pool, (mod {sub} {pow}));
         modulus
       }
+      Operator::BvXor => {
+        let two_term = pool.add(Term::new_int(&two));
+        let size = get_size(&args[1], pool);  
+        let pow_int = rug::ops::Pow::pow(&two, size).complete();
+        let pow = pool.add(Term::new_int(pow_int));
+        let bvadd1 = bvadd(&args[0], &args[1], pool);
+        let bvand1 = bvand(&args[0], &args[1], pool);
+        let bvand2 = build_term!(pool, (* {two_term} {bvand1}));
+        let sub = build_term!(pool, (- {bvadd1} {bvand2}));
+        let modulus = build_term!(pool, (mod {sub} {pow}));
+        modulus
+      }
       Operator::Not => {
         let trans = compute_expected_int_term(&args[0], pool);
         build_term!(pool, (not {trans}))

@@ -3,10 +3,10 @@ mytests/generated/umulo1.smt2.alethe: 1
 mytests/generated/bv_to_int_10084.smt2.alethe: 0
 mytests/generated/bv_to_int_10084_forall.smt2.alethe: 1
 mytests/generated/bv_to_int_inc1.smt2.alethe: 0
-mytests/generated/bv_to_int_check_ne_bvlshr0_4bit.smt2.minimized.smt2.alethe: 1
+mytests/generated/bv_to_int_check_ne_bvlshr0_4bit.smt2.minimized.smt2.alethe: 101
 mytests/generated/smulo1.smt2.alethe: 1
 mytests/generated/bv_to_int_12340_manual.smt2.alethe: 1
-mytests/generated/bv_to_int_quant1.smt2.alethe: 1
+mytests/generated/bv_to_int_quant1.smt2.alethe: 101
 mytests/generated/iand-native-2.smt2.alethe: 1
 mytests/generated/bv_to_int_proj_417.smt2.alethe: 0
 mytests/generated/bv_to_int1.smt2.alethe: 0
@@ -15,7 +15,7 @@ mytests/generated/uaddo3.smt2.alethe: 1
 mytests/generated/smulo1b.smt2.alethe: 1
 mytests/generated/ssubo1.smt2.alethe: 1
 mytests/generated/saddo3.smt2.alethe: 1
-mytests/generated/bv2int-isabelle.smt2.alethe: 0
+mytests/generated/bv2int-isabelle.smt2.alethe: 101
 mytests/generated/bv_to_int_zext.smt2.alethe: 0
 mytests/generated/bv_to_int_bitwise.smt2.alethe: 0
 mytests/generated/bv_to_int_bvmul2.smt2.alethe: 1
@@ -23,8 +23,8 @@ mytests/generated/bv-int-collapse2.smt2.alethe: 0
 mytests/generated/ssubo3.smt2.alethe: 1
 mytests/generated/bv_to_int_and_or.smt2.alethe: 1
 mytests/generated/bv-int-collapse1.smt2.alethe: 0
-mytests/generated/bv2nat-simp-range.smt2.alethe: 0
-mytests/generated/bv_to_int_check_bvsgt_bvlshr0_4bit.smt2.minimized.smt2.alethe: 1
+mytests/generated/bv2nat-simp-range.smt2.alethe: 101
+mytests/generated/bv_to_int_check_bvsgt_bvlshr0_4bit.smt2.minimized.smt2.alethe: 101
 mytests/generated/bv2nat-ground.smt2.alethe: 0
 mytests/generated/usubo1.smt2.alethe: 1
 mytests/generated/bv_to_int_mask_array_1.smt2.alethe: 1
@@ -40,7 +40,7 @@ mytests/crafted/bvshl.smt2.alethe: 1
 mytests/crafted/bench_5552_min_manual_min_manual.smt2.alethe: 0
 mytests/crafted/urem.smt2.alethe: 0
 mytests/crafted/bench_409.smt2.alethe: 0
-mytests/crafted/channelRoute.in2.smt2.alethe: 1
+mytests/crafted/channelRoute.in2.smt2.alethe: 0
 mytests/crafted/xor.smt2.alethe: 0
 mytests/crafted/extend.smt2.alethe: 0
 mytests/crafted/bench_1687_min_manual_dump_min.smt2.alethe: 0
