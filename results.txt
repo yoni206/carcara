@@ -33,10 +33,11 @@ mytests/generated/sdivo1.smt2.alethe: 1
 mytests/crafted/bv_to_int_bvand.smt2.alethe: 0
 mytests/crafted/binary.smt2.alethe: 0
 mytests/crafted/bv_to_int_bvneg.smt2.alethe: 0
+mytests/crafted/bvxor.smt2.alethe: 0
 mytests/crafted/bvudiv.smt2.alethe: 0
 mytests/crafted/ite.smt2.alethe: 0
 mytests/crafted/extract.smt2.alethe: 0
-mytests/crafted/bvshl.smt2.alethe: 1
+mytests/crafted/bvshl.smt2.alethe: 0
 mytests/crafted/bench_5552_min_manual_min_manual.smt2.alethe: 0
 mytests/crafted/urem.smt2.alethe: 0
 mytests/crafted/bench_409.smt2.alethe: 0

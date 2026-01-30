@@ -305,10 +305,12 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         ite
       }
       Operator::BvShl => {
-        let two : u32 = 2;
+        let two = rug::Integer::from(2);
         let x = &args[0].clone();
         let y = &args[1].clone();
         let size = get_size(x, pool);  
+        let int_pow_size = rug::ops::Pow::pow(&two, size).complete();
+        let pow_size_term = pool.add(Term::new_int(int_pow_size));
         let zero = pool.add(Term::new_int(0));
         let mut ite = zero;
         let mut body;
@@ -316,9 +318,10 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
         let y = compute_expected_int_term(y, pool);
         for i in 0..size {
           let i_term = pool.add(Term::new_int(i));
-          let int_pow = two.pow(i);
+          let int_pow = rug::ops::Pow::pow(&two, i).complete();
           let pow_term = pool.add(Term::new_int(int_pow));
-          body = build_term!(pool, (* {x.clone()} {pow_term}));
+          let mul = build_term!(pool, (* {x.clone()} {pow_term}));
+          body = build_term!(pool, (mod {mul} {pow_size_term.clone()}));
           let eq = build_term!(pool, (= {y.clone()} {i_term}));
           ite = build_term!(pool, (ite {eq} {body} {ite}));
         }

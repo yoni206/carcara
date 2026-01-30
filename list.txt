@@ -34,6 +34,7 @@
 /home/ubuntu/git/carcara/mytests/crafted/bvshl.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bench_1687_min_manual_dump_min.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bv_to_int_bvneg.smt2
+/home/ubuntu/git/carcara/mytests/crafted/bvxor.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bench_409.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bvudiv.smt2
 /home/ubuntu/git/carcara/mytests/crafted/bench_5552_min_manual_min_manual.smt2
