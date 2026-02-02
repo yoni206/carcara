@@ -530,6 +530,9 @@ fn compute_expected_int_term(bv_term : &Rc<Term>, pool: &mut dyn TermPool) -> Rc
     Term::Const(Constant::BitVec(value, _)) => {
       pool.add(Term::new_int(value))
     },
+    Term::Const(Constant::Integer(value)) => {
+      pool.add(Term::new_int(value))
+    },
     Term::Var(_, _) => {
       let s = pool.sort(bv_term).as_sort().cloned().unwrap();
       match s {
